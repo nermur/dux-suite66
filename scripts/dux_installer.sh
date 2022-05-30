@@ -9,6 +9,8 @@ set -eo pipefail
 ntpdate -q 0.pool.ntp.org
 wait
 
+git config --global --add safe.directory "${HOME}/dux"
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "${SCRIPT_DIR}" && GIT_DIR=$(git rev-parse --show-toplevel)
 source "${GIT_DIR}/scripts/GLOBAL_IMPORTS.sh"
