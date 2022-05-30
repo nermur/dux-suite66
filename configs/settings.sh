@@ -39,20 +39,8 @@ bootloader_type="2"
 # Will download around an extra 300MB.
 include_kernel_lts="1"
 
-#- Download server region selection
-#
-# North America (United States -> Canada): US,CA
-# South America (Brazil -> Mexico -> United States): BR,MX,US
-# Europe #1 (Germany -> Netherlands): DE,NL
-# Europe #2 (Sweden -> Finland -> Norway): SE,FI,NO
-# South Africa (SA -> Kenya -> India): ZA,KE,IN
-# West Asia (Israel -> Italy -> France -> Georgia): IL,IT,FR,GE
-# NE Asia (Japan -> South Korea -> Taiwan): JP,SK,TW
-# SE Asia (Singapore -> Hong Kong -> Indonesia -> Thailand): SG,HK,ID,TH
-# Oceania (Australia -> New Zealand -> New Caledonia): AU,NZ,NC
-#
-# Countries not listed here are at your own risk!
-reflector_countrylist="US,CA"
+# 1.0 = 1 second timeout. Sattelite internet might require a 5 second timeout?
+mirror_timeout="1.0"
 
 #- GNOME is more stable than KDE.
 # 0:  Don't install a desktop environment (use your own).

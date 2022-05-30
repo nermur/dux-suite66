@@ -16,7 +16,7 @@ cd "${SCRIPT_DIR}" && GIT_DIR=$(git rev-parse --show-toplevel)
 source "${GIT_DIR}/scripts/GLOBAL_IMPORTS.sh"
 source "${GIT_DIR}/configs/settings.sh"
 
-if [[ $(hostname) = "artix-live" ]]; then
+if [[ ! $(hostname) = "artix-live" ]]; then
 	echo -e "\nERROR: Do not run this script outside of the Artix Linux ISO!\n"
 	exit 1
 fi

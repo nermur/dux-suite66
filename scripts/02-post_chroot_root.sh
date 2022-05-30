@@ -153,7 +153,7 @@ PKGS+="noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-hack ttf-liberation ttf-ca
 PKGS+="irqbalance zram-generator power-profiles-daemon thermald dbus-broker gamemode lib32-gamemode iptables-nft libnewt pigz pbzip2 \
 strace usbutils linux-firmware gnome-keyring avahi nss-mdns \
 man-db man-pages pacman-contrib snapper snap-pac mkinitcpio linux-zen linux-zen-headers bat \
-wget trash-cli reflector rebuild-detector vi "
+wget trash-cli rebuild-detector vi "
 
 [[ ${bootloader_type} -eq 1 ]] &&
 	PKGS+="grub os-prober "
@@ -204,7 +204,7 @@ ln -sf /dev/null /usr/share/libalpm/hooks/60-mkinitcpio-remove.hook
 ln -sf /dev/null /usr/share/libalpm/hooks/90-mkinitcpio-install.hook
 
 # Default services, regardless of options selected.
-SERVICES+="fstrim.timer reflector.timer irqbalance.service systemd-oomd.service dbus-broker.service systemd-timesyncd.service power-profiles-daemon.service thermald.service systemd-resolved.service rfkill-unblock@all avahi-daemon.service "
+SERVICES+="fstrim.timer irqbalance.service systemd-oomd.service dbus-broker.service systemd-timesyncd.service power-profiles-daemon.service thermald.service systemd-resolved.service rfkill-unblock@all avahi-daemon.service "
 
 # shellcheck disable=SC2086
 _systemctl enable ${SERVICES}
@@ -307,9 +307,6 @@ fi
 
 # Syntax errors in /etc/nsswitch.conf will break /etc/passwd, /etc/group, and /etc/hosts (breaking the whole OS until repaired).
 chattr -f +i /etc/nsswitch.conf
-
-_move2bkup "/etc/xdg/reflector/reflector.conf" &&
-	cp "${cp_flags}" "${GIT_DIR}"/files/etc/xdg/reflector/reflector.conf "/etc/xdg/reflector/"
 
 _prepare_03() {
 	chmod +x -R {/home/"${WHICH_USER}"/dux,/home/"${WHICH_USER}"/dux_backup_"${DATE}"} || :
