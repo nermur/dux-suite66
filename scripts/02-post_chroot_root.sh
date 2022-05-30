@@ -212,7 +212,7 @@ _systemctl enable ${SERVICES}
 [[ ! -d "/sys/firmware/efi" ]] &&
 	declare -r bootloader_type="1" && export bootloader_type
 
-REQUIRED_PARAMS="cryptdevice=${LUKS_UUID}:lukspart:discard root=/dev/mapper/lukspart rootflags=subvol=@root rw"
+REQUIRED_PARAMS="cryptdevice=UUID=${LUKS_UUID}:lukspart:allow-discards root=/dev/mapper/lukspart rootflags=subvol=@root rw"
 COMMON_PARAMS="loglevel=3 sysrq_always_enabled=1 quiet add_efi_memmap acpi_osi=Linux nmi_watchdog=0 skew_tick=1 mce=ignore_ce nosoftlockup"
 LUKS_UUID=$(blkid | sed -n '/crypto_LUKS/p' | cut -f2 -d' ' | cut -d '=' -f2 | sed 's/\"//g')
 if [[ ${bootloader_type} -eq 1 ]]; then

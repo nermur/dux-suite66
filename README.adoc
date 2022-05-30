@@ -9,6 +9,8 @@ ifdef::env-github[]
 endif::[]
 :imagesdir: imgs/
 
+WARNING: There is no stable builds currently of Dux, please don't use it for now.
+
 NOTE: Skip to link:0.1_start.adoc[0.1_start.adoc] for installation.
 
 == Requirements

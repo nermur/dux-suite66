@@ -123,6 +123,11 @@ case ${desktop_environment} in
     ;;
 esac
 
+# 1: Disable installing drivers for NVIDIA GPUs.
+avoid_nvidia_gpus="0"
+avoid_intel_gpus="0"
+avoid_amd_gpus="0"
+
 # 1: Proprietary current
 # 2: Proprietary 470.xxx
 # 3: Proprietary 390.xxx (For Fermi 1.0 to Maxwell 1.0)
