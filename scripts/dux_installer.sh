@@ -16,8 +16,8 @@ cd "${SCRIPT_DIR}" && GIT_DIR=$(git rev-parse --show-toplevel)
 source "${GIT_DIR}/scripts/GLOBAL_IMPORTS.sh"
 source "${GIT_DIR}/configs/settings.sh"
 
-if ! grep -q "'archiso'" /etc/mkinitcpio.d/linux.preset; then
-	echo -e "\nERROR: Do not run this script outside of the Arch Linux ISO!\n"
+if [[ $(hostname) = "artix-live" ]]; then
+	echo -e "\nERROR: Do not run this script outside of the Artix Linux ISO!\n"
 	exit 1
 fi
 if cryptsetup status "lukspart" | grep -q "inactive"; then
