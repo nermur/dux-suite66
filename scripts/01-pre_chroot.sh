@@ -77,6 +77,8 @@ if [[ ${DEBUG} -ne 1 ]]; then
 		tee /etc/pacman.d/mirrorlist
 fi
 
+sed -i "/\[lib32\]/,/Include/"'s/^#//' /etc/pacman.conf
+
 MLIST="Include = /etc/pacman.d/mirrorlist-arch"
 if ! pcregrep -q -M "\[extra\].*\n.*${MLIST}" /etc/pacman.conf; then
 	echo -e "\n[extra]\n${MLIST}\n" >>/etc/pacman.conf

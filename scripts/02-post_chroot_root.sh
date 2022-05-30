@@ -99,8 +99,6 @@ if ! grep -q -e "GNUMAKEFLAGS=-j${NPROC} -l${NPROC}" -e "MAKEFLAGS=-j${NPROC} -l
 	echo -e "\nGNUMAKEFLAGS=-j${NPROC} -l${NPROC}\nMAKEFLAGS=-j${NPROC} -l${NPROC}" /etc/environment
 fi
 
-sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
-
 _hardware() {
 	if [[ ${hardware_wifi_and_bluetooth} -eq 1 ]]; then
 		PKGS+="iwd bluez bluez-utils "
