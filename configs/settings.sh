@@ -39,7 +39,7 @@ bootloader_type="2"
 # Will download around an extra 300MB.
 include_kernel_lts="1"
 
-# 1.0 = 1 second timeout. Sattelite internet might require a 5 second timeout?
+# 1.0 = 1 second timeout.
 mirror_timeout="1.0"
 
 #- GNOME is more stable than KDE.

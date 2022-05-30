@@ -71,10 +71,10 @@ pacman -S --noconfirm --ask=4 pacman-contrib
 if [[ ${DEBUG} -ne 1 ]]; then
 	echo -e "\nTesting which mirrors have the shortest response time, please wait...\n"
 	# shellcheck disable=SC2086,SC2312
-	curl -s "https://gitea.artixlinux.org/packagesA/artix-mirrorlist/raw/branch/master/x86_64/core/mirrorlist" | \
-	sed -e 's/^#Server/Server/' -e '/^#/d' | \
-	rankmirrors -v -n 5 --max-time ${mirror_timeout} >/etc/pacman.d/mirrorlist
-	
+	curl -s "https://gitea.artixlinux.org/packagesA/artix-mirrorlist/raw/branch/master/x86_64/core/mirrorlist" |
+		sed -e 's/^#Server/Server/' -e '/^#/d' |
+		rankmirrors -v -n 5 --max-time ${mirror_timeout} - |
+		tee /etc/pacman.d/mirrorlist
 fi
 
 # Fixes an edge case stemming from Pacman suddenly exiting (due to the user pressing Ctrl + C, which sends SIGINT).
@@ -82,7 +82,7 @@ rm -f /mnt/var/lib/pacman/db.lck
 
 # Keep packages here to a minimum; packages are to be installed later if possible.
 basestrap /mnt cryptsetup dosfstools btrfs-progs base base-devel git \
-	66 elogind-suite66
+	66 elogind-suite66 \
 	zsh grml-zsh-config --quiet --noconfirm --ask=4 --needed
 
 # GnuPG can't use systemd-resolved's selected "nameserver"(s) without this symlink; prevents installation issues.
