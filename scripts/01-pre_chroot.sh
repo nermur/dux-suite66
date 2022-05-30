@@ -67,7 +67,7 @@ _mount_partitions() {
 }
 _mount_partitions
 
-pacman -S --noconfirm --ask=4 pacman-contrib
+pacman -S --noconfirm --ask=4 pacman-contrib artix-archlinux-support
 if [[ ${DEBUG} -ne 1 ]]; then
 	echo -e "\nTesting which mirrors have the shortest response time, please wait...\n"
 	# shellcheck disable=SC2086,SC2312
@@ -77,11 +77,23 @@ if [[ ${DEBUG} -ne 1 ]]; then
 		tee /etc/pacman.d/mirrorlist
 fi
 
+MLIST="Include = /etc/pacman.d/mirrorlist-arch"
+if ! pcregrep -q -M "\[extra\].*\n.*${MLIST}" /etc/pacman.conf; then
+	echo -e "\n[extra]\n${MLIST}\n" >>/etc/pacman.conf
+fi
+if ! pcregrep -q -M "\[community\].*\n.*${MLIST}" /etc/pacman.conf; then
+	echo -e "\n[community]\n${MLIST}\n" >>/etc/pacman.conf
+fi
+if ! pcregrep -q -M "\[multilib\].*\n.*${MLIST}" /etc/pacman.conf; then
+	echo -e "\n[multilib]\n${MLIST}\n" >>/etc/pacman.conf
+fi
+
 # Fixes an edge case stemming from Pacman suddenly exiting (due to the user pressing Ctrl + C, which sends SIGINT).
 rm -f /mnt/var/lib/pacman/db.lck
 
 # Keep packages here to a minimum; packages are to be installed later if possible.
-basestrap /mnt cryptsetup dosfstools btrfs-progs base base-devel git \
+basestrap /mnt artix-archlinux-support lib32-artix-archlinux-support \
+	cryptsetup dosfstools btrfs-progs base base-devel git \
 	66 elogind-suite66 \
 	zsh grml-zsh-config --quiet --noconfirm --ask=4 --needed
 
