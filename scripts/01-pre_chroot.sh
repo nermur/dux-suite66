@@ -67,7 +67,7 @@ _mount_partitions() {
 }
 _mount_partitions
 
-pacman -S --noconfirm --ask=4 pacman-contrib artix-archlinux-support
+pacman -Sy --noconfirm --ask=4 pacman-contrib artix-archlinux-support
 if [[ ${DEBUG} -ne 1 ]]; then
 	echo -e "\nTesting which mirrors have the shortest response time, please wait...\n"
 	# shellcheck disable=SC2086,SC2312
