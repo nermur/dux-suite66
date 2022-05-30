@@ -13,21 +13,25 @@ NOTE: Skip to link:0.1_start.adoc[0.1_start.adoc] for installation.
 
 == Requirements
 * x86_64 processor/CPU; arm64 and others aren't supported.
-** If booting into the Arch Linux ISO fails on UEFI, a very rare IA32 UEFI BIOS is used. Follow link:https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface#Booting_64-bit_kernel_on_32-bit_UEFI[these instructions] to successfully boot the Arch Linux ISO.
 * link:https://archive.is/QwLMB[Disable UEFI Secure Boot]
 ** If convincing is needed, link:https://github.com/pbatard/rufus/wiki/FAQ#Why_do_I_need_to_disable_Secure_Boot_to_use_UEFINTFS[read this].
-* The latest link:https://archlinux.org/download/[Arch Linux ISO]; if you have no torrent client, use link:https://www.qbittorrent.org/download.php[qBittorrent].
-** A >=1GB USB to flash the Arch Linux ISO on.
+* The weekly artix-xfce-suite66 ISO from one of the following mirrors:
+** link:https://mirror1.cl.netactuate.com/artix/weekly-iso[NetActuate], Chile (link:rsync://mirror1.cl.netactuate.com/artix/weekly-iso/[rsync] available)
+** link:http://mirror1.artixlinux.org/weekly-iso[Artix Linux primary mirror], France
+** link:https://us-mirror.artixlinux.org/weekly-isos.php[Artix Linux download server 1], USA
+** link:https://download.artixlinux.org/weekly-isos.php[Artix Linux download server 2], Germany
+* A >=1.5GB USB to flash the artix-xfce-suite66 ISO on.
+** DVDs can be used, but we have no instructions for these.
 
 == Goals
-* It's just Arch Linux.
+* It's just Artix Linux (s6 + suite66).
 ** As a bonus, Dux won't brand itself on the system at all besides a disk name.
 
 * *Resilience*
 ** Backups are made for every file/folder modified by Dux.
 ** The built-in ricing is ensured to not cause breakages in future updates for both GNOME and KDE.
 ** No third-party Pacman (package) repositories are ever used.
-** The official Arch Linux ISO is used, as it's a solid foundation that also has an entire team to maintain it.
+** The official Artix Linux ISO is used, as it's a solid foundation that also has an entire team to maintain it.
 
 * *Stability*
 ** Dux has a unique take on "ricing" (customization) by avoiding the following:
@@ -41,7 +45,7 @@ NOTE: Skip to link:0.1_start.adoc[0.1_start.adoc] for installation.
 ** If there's a better way of doing something which leads into additional simplicity for the big picture, that should be pursued as well.
 
 * To be forked.
-** Want to contribute but disagree with something in link:CONTRIBUTING.adoc[CONTRIBUTING.adoc]? No problem, Dux has been fully intended to be easy for you to make the Arch Linux installer you want.
+** Want to contribute but disagree with something in link:CONTRIBUTING.adoc[CONTRIBUTING.adoc]? No problem, Dux has been fully intended to be easy for you to make the Artix Linux installer you want.
 *** Credit (a link to Dux in the README) should be given so others can find their way back to here, but it's optional.
 
 == Notable features installed by Dux
@@ -51,7 +55,7 @@ NOTE: Skip to link:0.1_start.adoc[0.1_start.adoc] for installation.
 ** QEMU (multiple GPU drivers, such as QXL and Virtio), VMWare, Hyper-V, and VirtualBox.
 
 * Ability to boot alongside other operating systems such as Windows 11.
-** Catch: Alternative OS installs can't be on the same disk/drive/storage Dux installed Arch Linux to.
+** Catch: Alternative OS installs can't be on the same disk/drive/storage Dux installed Artix Linux to.
 
 * Support for old to new NVIDIA, AMD, and Intel GPUs.
 ** Nouveau drivers can optionally be tweaked to be relatively stable without sacrificing speed (on a 650 Ti), which by default was very unstable.
@@ -75,7 +79,7 @@ https://github.com/systemd/systemd/issues/9725#issuecomment-564872011
 
 * `Btrfs` is used to: 
 ** Compress data in real-time without any noticeable performance impact, reducing write amplification (increases longevity of disks by lowering disk usage), and increasing read speeds on slow disks.
-** Have high-performance and deduplicated "snapshots" (backups) of key areas, which turns Arch Linux updates breaking software into a small nuisance, as it's very quick and easy to restore to a previous snapshot.
+** Have high-performance and deduplicated "snapshots" (backups) of key areas, which turns Artix Linux updates breaking software into a small nuisance, as it's very quick and easy to restore to a previous snapshot.
 ** Allow for an easier data recovery if a disk gets damaged and/or starts to have bad sectors.
 
 * `GPT`

@@ -74,7 +74,7 @@ fi
 
 if [[ ${mpv} -eq 1 ]]; then
 	PKGS+="mpv "
-	trap 'sudo -H -u "${WHICH_USER}" bash -c "${SYSTEMD_USER_ENV} DENY_SUPERUSER=1 /home/${WHICH_USER}/dux/scripts/non-SU/software_catalog/mpv_config.sh"' EXIT
+	trap 'sudo -H -u "${WHICH_USER}" bash -c "DENY_SUPERUSER=1 /home/${WHICH_USER}/dux/scripts/non-SU/software_catalog/mpv_config.sh"' EXIT
 fi
 
 [[ ${visual_studio_code} -eq 1 ]] &&

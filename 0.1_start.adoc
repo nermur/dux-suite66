@@ -33,7 +33,7 @@ image:windows2.png[]
 
 . Follow the Linux instructions below.
 
-*Linux* 
+*Linux*
 
 . The full key (not short or long) is used to fully protect against collision attacks. +
 `gpg --auto-key-locate clear,wkd -v --locate-external-key pierre@archlinux.de` 
@@ -106,5 +106,5 @@ https://github.com/pbatard/rufus/releases
 `# dd bs=4M if=/path/to/archkbd:[TAB] of=/dev/EXAMPLE conv=sync`
 
 ___
-Once booted into the Arch Linux ISO, proceed to: +
+Once booted into the artix-xfce-suite66 ISO, proceed to: +
 => link:0.2_install.adoc[0.2_install.adoc]

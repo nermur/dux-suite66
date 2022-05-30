@@ -26,29 +26,6 @@ if [[ ${support_hibernation} -eq 1 ]]; then
 fi
 
 _preparation() {
-	pacman -Sy --noconfirm --ask=4 archlinux-keyring && pacman -Su --noconfirm --ask=4
-
-	sed -i '/^#en_US.UTF-8 UTF-8/s/^#//' /etc/locale.gen
-	locale-gen
-
-	local TZ
-	TZ=$(curl -s http://ip-api.com/line?fields=timezone)
-	systemd-firstboot --keymap="${system_keymap}" --timezone="${TZ}" --locale="en_US.UTF-8" --hostname="${system_hostname}" --setup-machine-id --force || :
-	# Use the new locale.conf now to stop 'perl' from complaining about a broken locale.
-	unset LANG
-	source /etc/profile.d/locale.sh
-}
-_preparation
-
-_userinfo() {
-	if [[ ! -s "/etc/hostname" ]]; then
-		cat <<EOF >/etc/hosts
-127.0.0.1        localhost
-::1              ip6-localhost
-127.0.1.1        ${system_hostname}        ${system_hostname}
-EOF
-	fi
-
 	# Safe to do; if say /home/admin existed, it wouldn't also remove /home/admin.
 	if id -u "${WHICH_USER}" >/dev/null 2>&1; then
 		userdel "${WHICH_USER}"
@@ -71,9 +48,42 @@ EOF
 
 	BACKUPS="/home/${WHICH_USER}/dux_backups" && export BACKUPS
 
-	mkdir "${mkdir_flags}" {/etc/{modules-load.d,modprobe.d,pacman.d/hooks,X11,fonts,systemd/user,snapper/configs,conf.d},/boot,/home/"${WHICH_USER}"/.config/{fontconfig/conf.d,systemd/user},/usr/share/libalpm/scripts}
+	mkdir "${mkdir_flags}" {/etc/{modules-load.d,modprobe.d,pacman.d/hooks,X11,fonts,snapper/configs,conf.d},/boot,/home/"${WHICH_USER}"/.config/fontconfig/conf.d,/usr/share/libalpm/scripts}
+
+	pacman -Sy --noconfirm --ask=4 artix-keyring && pacman -Su --noconfirm --ask=4
+
+	sed -i '/^#en_US.UTF-8 UTF-8/s/^#//' /etc/locale.gen
+	locale-gen
+
+	if ! grep -q "LANG=" /etc/locale.conf; then
+		echo -e "LANG=en_US.UTF-8" /etc/locale.conf
+	fi
+
+	# Use the new locale.conf now to stop 'perl' from complaining about a broken locale.
+	unset LANG
+	source /etc/profile.d/locale.sh
+
+	if ! grep -q "KEYMAP=${system_keymap}" /etc/vconsole.conf; then
+		echo -e "KEYMAP=${system_keymap}" /etc/vconsole.conf
+	fi
+	if ! grep -q "${system_hostname}" /etc/hostname; then
+		echo -e "${system_hostname}" /etc/hostname
+	fi
+
+	if [[ ! -s "/etc/hostname" ]]; then
+		cat <<EOF >/etc/hosts
+127.0.0.1        localhost
+::1              ip6-localhost
+127.0.1.1        ${system_hostname}        ${system_hostname}
+EOF
+	fi
+
+	local TZ
+	TZ=$(curl -s http://ip-api.com/line?fields=timezone)
+	ln -sf /usr/share/zoneinfo/"${TZ}" /etc/localtime &&
+		hwclock --systohc
 }
-_userinfo
+_preparation
 
 # Ensure multi-threading across all PKGBUILDs to drastically lower compilation times.
 sed -i -e "s/-march=x86-64 -mtune=generic/-march=${MARCH} -mtune=${MARCH}/" \
@@ -85,15 +95,16 @@ sed -i -e "s/-march=x86-64 -mtune=generic/-march=${MARCH} -mtune=${MARCH}/" \
 	-e "s/zstd -c -z -q -/zstd -c -z -q -T${NPROC} -/" \
 	-e "s/lrzip -q/lrzip -q -p ${NPROC}/" /etc/makepkg.conf
 
-sed -i "s/.DefaultEnvironment.*/DefaultEnvironment=\"GNUMAKEFLAGS=-j${NPROC} -l${NPROC}\" \"MAKEFLAGS=-j${NPROC} -l${NPROC}\"/" \
-	/etc/systemd/{system.conf,user.conf}
+if ! grep -q -e "GNUMAKEFLAGS=-j${NPROC} -l${NPROC}" -e "MAKEFLAGS=-j${NPROC} -l${NPROC}" /etc/environment; then
+	echo -e "\nGNUMAKEFLAGS=-j${NPROC} -l${NPROC}\nMAKEFLAGS=-j${NPROC} -l${NPROC}" /etc/environment
+fi
 
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
 
 _hardware() {
 	if [[ ${hardware_wifi_and_bluetooth} -eq 1 ]]; then
 		PKGS+="iwd bluez bluez-utils "
-		SERVICES+="iwd.service bluetooth.service "
+		SERVICES+="iwd bluetoothd "
 	fi
 
 	[[ ${hardware_mobile_broadband} -eq 1 ]] &&
@@ -142,7 +153,7 @@ PKGS+="noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-hack ttf-liberation ttf-ca
 PKGS+="irqbalance zram-generator power-profiles-daemon thermald dbus-broker gamemode lib32-gamemode iptables-nft libnewt pigz pbzip2 \
 strace usbutils linux-firmware gnome-keyring avahi nss-mdns \
 man-db man-pages pacman-contrib snapper snap-pac mkinitcpio linux-zen linux-zen-headers bat \
-wget trash-cli reflector rebuild-detector vim "
+wget trash-cli reflector rebuild-detector vi "
 
 [[ ${bootloader_type} -eq 1 ]] &&
 	PKGS+="grub os-prober "
@@ -198,12 +209,10 @@ SERVICES+="fstrim.timer reflector.timer irqbalance.service systemd-oomd.service 
 # shellcheck disable=SC2086
 _systemctl enable ${SERVICES}
 
-[[ ${disks_lvm2} -eq 0 ]] &&
-	systemctl mask lvm2-lvmpolld.socket lvm2-monitor.service
-
 [[ ! -d "/sys/firmware/efi" ]] &&
 	declare -r bootloader_type="1" && export bootloader_type
 
+REQUIRED_PARAMS="cryptdevice=${LUKS_UUID}:lukspart:discard root=/dev/mapper/lukspart rootflags=subvol=@root rw"
 COMMON_PARAMS="loglevel=3 sysrq_always_enabled=1 quiet add_efi_memmap acpi_osi=Linux nmi_watchdog=0 skew_tick=1 mce=ignore_ce nosoftlockup"
 LUKS_UUID=$(blkid | sed -n '/crypto_LUKS/p' | cut -f2 -d' ' | cut -d '=' -f2 | sed 's/\"//g')
 if [[ ${bootloader_type} -eq 1 ]]; then
@@ -224,7 +233,7 @@ if [[ ${bootloader_type} -eq 1 ]]; then
 
 		# https://access.redhat.com/sites/default/files/attachments/201501-perf-brief-low-latency-tuning-rhel7-v1.1.pdf
 		# acpi_osi=Linux: tell BIOS to load their ACPI tables for Linux.
-		sed -i -e "s|GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX=\"rd.luks.name=${LUKS_UUID}=lukspart root=/dev/mapper/lukspart rootflags=subvol=@root rw\"|" \
+		sed -i -e "s|GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX=\"${REQUIRED_PARAMS}\"|" \
 			-e "s|GRUB_CMDLINE_LINUX_DEFAULT=.*|GRUB_CMDLINE_LINUX_DEFAULT=\"${COMMON_PARAMS}\"|" \
 			-e "s|GRUB_DISABLE_OS_PROBER=.*|GRUB_DISABLE_OS_PROBER=false|" \
 			"${BOOT_CONF}"
@@ -243,11 +252,11 @@ elif [[ ${bootloader_type} -eq 2 ]]; then
 	_refind_bootloader_config() {
 		_move2bkup "${BOOT_CONF}"
 		cat <<EOF >"${BOOT_CONF}"
-"Boot using standard options"  "rd.luks.name=${LUKS_UUID}=lukspart root=/dev/mapper/lukspart rootflags=subvol=@root rw ${COMMON_PARAMS}"
+"Boot using standard options"  "${REQUIRED_PARAMS} ${COMMON_PARAMS}"
 
-"Boot to single-user mode"  "single rd.luks.name=${LUKS_UUID}=lukspart root=/dev/mapper/lukspart rootflags=subvol=@root rw ${COMMON_PARAMS}"
+"Boot to single-user mode"  "single ${REQUIRED_PARAMS} ${COMMON_PARAMS}"
 
-"Boot with minimal options"  "rd.luks.name=${LUKS_UUID}=lukspart root=/dev/mapper/lukspart rootflags=subvol=@root rw"
+"Boot with minimal options"  "${REQUIRED_PARAMS}"
 EOF
 	}
 	_setup_refind_bootloader

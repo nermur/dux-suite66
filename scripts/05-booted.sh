@@ -21,13 +21,13 @@ _do_last() {
 	if [[ ${desktop_environment} -eq 1 ]] && [[ ${allow_gnome_rice} -eq 1 ]]; then
 		_gnome_rice() {
 			(bash "/home/${WHICH_USER}/dux/scripts/rice_GNOME.sh") |& tee "${GIT_DIR}/logs/rice_GNOME.log"
-			(sudo -H -u "${WHICH_USER}" DENY_SUPERUSER=1 ${SYSTEMD_USER_ENV} bash "/home/${WHICH_USER}/dux/scripts/non-SU/rice_GNOME_part2.sh") |& tee "${GIT_DIR}/logs/rice_GNOME_part2.log"
+			(sudo -H -u "${WHICH_USER}" DENY_SUPERUSER=1 bash "/home/${WHICH_USER}/dux/scripts/non-SU/rice_GNOME_part2.sh") |& tee "${GIT_DIR}/logs/rice_GNOME_part2.log"
 		}
 		_gnome_rice
 	elif [[ ${desktop_environment} -eq 2 ]] && [[ ${allow_kde_rice} -eq 1 ]]; then
 		_kde_rice() {
 			(bash "/home/${WHICH_USER}/dux/scripts/rice_KDE.sh") |& tee "${GIT_DIR}/logs/rice_KDE.log"
-			(sudo -H -u "${WHICH_USER}" DENY_SUPERUSER=1 ${SYSTEMD_USER_ENV} bash "/home/${WHICH_USER}/dux/scripts/non-SU/rice_KDE_part2.sh") |& tee "${GIT_DIR}/logs/rice_KDE_part2.log"
+			(sudo -H -u "${WHICH_USER}" DENY_SUPERUSER=1 bash "/home/${WHICH_USER}/dux/scripts/non-SU/rice_KDE_part2.sh") |& tee "${GIT_DIR}/logs/rice_KDE_part2.log"
 		}
 		_kde_rice
 	fi

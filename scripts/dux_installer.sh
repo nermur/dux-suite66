@@ -64,7 +64,7 @@ _02() {
 _02
 
 _03() {
-	(artix-chroot /mnt sudo -u "${INITIAL_USER}" DENY_SUPERUSER=1 ${SYSTEMD_USER_ENV} bash "/home/${INITIAL_USER}/dux/scripts/03-post_chroot_user.sh") |& tee "${GIT_DIR}/logs/03-post_chroot_user.log" || return
+	(artix-chroot /mnt sudo -u "${INITIAL_USER}" DENY_SUPERUSER=1 bash "/home/${INITIAL_USER}/dux/scripts/03-post_chroot_user.sh") |& tee "${GIT_DIR}/logs/03-post_chroot_user.log" || return
 }
 _03
 

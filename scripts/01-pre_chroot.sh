@@ -78,7 +78,8 @@ fi
 rm -f /mnt/var/lib/pacman/db.lck
 
 # Keep packages here to a minimum; packages are to be installed later if possible.
-pacstrap /mnt cryptsetup dosfstools btrfs-progs base base-devel git \
+basestrap /mnt cryptsetup dosfstools btrfs-progs base base-devel git \
+	66 elogind-suite66
 	zsh grml-zsh-config --quiet --noconfirm --ask=4 --needed
 
 # GnuPG can't use systemd-resolved's selected "nameserver"(s) without this symlink; prevents installation issues.
@@ -90,7 +91,7 @@ cat <<'EOF' >/mnt/etc/fstab
 
 # <file system> <dir> <type> <options> <dump> <pass>
 EOF
-genfstab -U /mnt >>/mnt/etc/fstab
+fstabgen -U /mnt >>/mnt/etc/fstab
 
 echo -e "# Some useful configuration is gone if this isn't mounted\ndebugfs    /sys/kernel/debug      debugfs  defaults  0 0" >>/mnt/etc/fstab
 

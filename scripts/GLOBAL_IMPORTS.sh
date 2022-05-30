@@ -31,10 +31,6 @@ elif [[ ${bootloader_type} -eq 2 ]]; then
 	BOOT_CONF="/boot/refind_linux.conf" && export BOOT_CONF
 fi
 
-[[ -z ${SYSTEMD_USER_ENV:-} ]] &&
-	SYSTEMD_USER_ENV="DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus XDG_RUNTIME_DIR=/run/user/1000" &&
-	export SYSTEMD_USER_ENV
-
 NOT_CHROOT=$(systemd-detect-virt --chroot >&/dev/null) || :
 
 # INITIAL_USER = running from artix-chroot
@@ -85,7 +81,7 @@ _move2bkup() {
 _pkgs_aur_add() {
 	[[ -n ${PKGS_AUR} ]] &&
 		# Use -Syu instead of -Syuu for paru.
-		sudo -H -u "${WHICH_USER}" bash -c "${SYSTEMD_USER_ENV} DENY_SUPERUSER=1 paru -Syu --aur --quiet --noconfirm --useask --needed --skipreview ${PKGS_AUR}"
+		sudo -H -u "${WHICH_USER}" bash -c "DENY_SUPERUSER=1 paru -Syu --aur --quiet --noconfirm --useask --needed --skipreview ${PKGS_AUR}"
 }
 
 if [[ ${DENY_SUPERUSER:-} -eq 1 && $(id -u) -ne 1000 ]]; then

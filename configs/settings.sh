@@ -6,7 +6,7 @@ set -a
 INITIAL_USER="admin"
 
 # Don't use any of the following: symbols, spaces.
-system_hostname="arch"
+system_hostname="artix"
 
 # Controls keyboard layout.
 # by ca cf cz de dk es et fa fi fr gr hu il it lt lv mk nl no pl ro ru sg ua uk us
@@ -26,9 +26,6 @@ hardware_nonwacom_drawing_tablet="0"
 
 # Supported printer list: https://www.openprinting.org/printers
 hardware_printers_and_scanners="1"
-
-# LVM2 not used to reduce potential breakage, also reduces boot times; LVM2 could have been used to allow resizing the /boot partition.
-disks_lvm2="0"
 
 # NOT FULLY TESTED YET
 support_hibernation="0"

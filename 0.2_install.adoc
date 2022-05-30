@@ -9,30 +9,23 @@ ifdef::env-github[]
 endif::[]
 :imagesdir: imgs/
 
-== Connectivity
-Ensure internet connection is established. +
-`$ ping archlinux.org`
+TIP: Incase you idle and get locked out... +
+Username: artix +
+Password: artix
 
-NOTE: No connection? +
-Run `# rfkill unblock all`, then link:https://wiki.archlinux.org/title/Iwd#Connect_to_a_network[use WiFi via 'iwctl'] or link:https://wiki.archlinux.org/title/Mmcli[mobile modem via 'mmcli']. +
+. Open "Terminal Emulator".
+. `# sudo pacman -Sy git`
+. `$ git clone https://github.com/nermur/dux`
 
-TIP: Quickest way to connect with iwctl (iwd): +
-`# iwctl` -> `station wlan0 connect your_wifi_SSID` +
-If "wlan0" isn't the correct interface, use `station list` to see your wireless interface(s).
-
-___
-. `# pacman -Sy git`
-. `# git clone https://github.com/nermur/dux`
-
-WARNING: If you're installing Dux to a pre-existing Arch Linux installation, then don't run this, otherwise it is required to run it. +
-`# bash ~/dux/scripts/00-format_disk.sh`
+WARNING: If you're installing Dux to a pre-existing Artix Linux installation, then don't run this, otherwise it is required to run it. +
+`# sudo bash ~/dux/scripts/00-format_disk.sh`
 
 * After the previous steps are complete, configure then install Dux:
-. Open `~/dux/configs/settings.sh` in your editor of choice, likely `vim` or `nano`
+. Open `~/dux/configs/settings.sh` in your editor of choice, likely `vi` or `nano`
 
 NOTE: Don't remove options in Dux's configs, just disable them.
 
-. After done configuring, run: `# bash ~/dux/scripts/dux_installer.sh`
+. After done configuring, run: `# sudo bash ~/dux/scripts/dux_installer.sh`
 
 ___
 => link:0.3_booted.adoc[0.3_booted.adoc]
