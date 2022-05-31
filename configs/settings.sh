@@ -42,10 +42,10 @@ include_kernel_lts="1"
 # 1.0 = 1 second timeout.
 mirror_timeout="1.0"
 
-# 1: Massive performance penalty on CPUs older than AMD Zen 2 or Intel 10th gen,
+# 0: Massive performance penalty on CPUs older than AMD Zen 2 or Intel 10th gen,
 # and caused a boot failure bug for Linux 5.18: 
 # https://bugs.archlinux.org/task/74891?project=1&pagenum=1
-cpu_security_mitigations="0"
+disable_cpu_security_mitigations="1"
 
 #- GNOME is more stable than KDE.
 # 0:  Don't install a desktop environment (use your own).
