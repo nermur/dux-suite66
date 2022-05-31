@@ -99,8 +99,8 @@ basestrap /mnt artix-archlinux-support lib32-artix-archlinux-support \
 	66 elogind-suite66 \
 	zsh grml-zsh-config --quiet --noconfirm --ask=4 --needed
 
-# GnuPG can't use systemd-resolved's selected "nameserver"(s) without this symlink; prevents installation issues.
-ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
+# A precaution to prevent installation issues from an invalid DNS configuration.
+ln -sf /etc/resolv.conf /mnt/etc/resolv.conf
 
 cat <<'EOF' >/mnt/etc/fstab
 # Static information about the filesystems.
