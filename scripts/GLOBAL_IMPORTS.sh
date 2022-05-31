@@ -5,7 +5,7 @@ set -e
 
 LOGIN_USER="$(stat -c %U "$(readlink /proc/self/fd/0)")"
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # SCRIPT_DIR is used to make GIT_DIR reliable
 cd "${SCRIPT_DIR}" && GIT_DIR=$(git rev-parse --show-toplevel)
 source "${GIT_DIR}/configs/settings.sh"
