@@ -149,8 +149,8 @@ PKGS+="noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-hack ttf-liberation ttf-ca
 
 # Default packages, regardless of options selected.
 PKGS+="irqbalance zram-generator power-profiles-daemon thermald dbus-broker gamemode lib32-gamemode iptables-nft libnewt pigz pbzip2 \
-strace usbutils linux-firmware gnome-keyring avahi nss-mdns \
-man-db man-pages pacman-contrib snapper snap-pac mkinitcpio linux-zen linux-zen-headers bat \
+strace usbutils mkinitcpio linux-zen linux-zen-headers linux-firmware gnome-keyring avahi nss-mdns \
+man-db man-pages pacman-contrib snapper snap-pac bat \
 wget trash-cli rebuild-detector vi "
 
 [[ ${bootloader_type} -eq 1 ]] &&
@@ -210,6 +210,8 @@ _systemctl enable ${SERVICES}
 [[ ! -d "/sys/firmware/efi" ]] &&
 	declare -r bootloader_type="1" && export bootloader_type
 
+[[ ${cpu_security_mitigations} -eq 0 ]] &&
+	MITIGATIONS_OFF="mitigations=off"
 REQUIRED_PARAMS="cryptdevice=UUID=${LUKS_UUID}:lukspart:allow-discards root=/dev/mapper/lukspart rootflags=subvol=@root rw"
 COMMON_PARAMS="loglevel=3 sysrq_always_enabled=1 quiet add_efi_memmap acpi_osi=Linux nmi_watchdog=0 skew_tick=1 mce=ignore_ce nosoftlockup"
 LUKS_UUID=$(blkid | sed -n '/crypto_LUKS/p' | cut -f2 -d' ' | cut -d '=' -f2 | sed 's/\"//g')
@@ -231,7 +233,7 @@ if [[ ${bootloader_type} -eq 1 ]]; then
 
 		# https://access.redhat.com/sites/default/files/attachments/201501-perf-brief-low-latency-tuning-rhel7-v1.1.pdf
 		# acpi_osi=Linux: tell BIOS to load their ACPI tables for Linux.
-		sed -i -e "s|GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX=\"${REQUIRED_PARAMS}\"|" \
+		sed -i -e "s|GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX=\"${MITIGATIONS_OFF:-} ${REQUIRED_PARAMS}\"|" \
 			-e "s|GRUB_CMDLINE_LINUX_DEFAULT=.*|GRUB_CMDLINE_LINUX_DEFAULT=\"${COMMON_PARAMS}\"|" \
 			-e "s|GRUB_DISABLE_OS_PROBER=.*|GRUB_DISABLE_OS_PROBER=false|" \
 			"${BOOT_CONF}"
@@ -250,11 +252,11 @@ elif [[ ${bootloader_type} -eq 2 ]]; then
 	_refind_bootloader_config() {
 		_move2bkup "${BOOT_CONF}"
 		cat <<EOF >"${BOOT_CONF}"
-"Boot using standard options"  "${REQUIRED_PARAMS} ${COMMON_PARAMS}"
+"Boot using standard options"  "${MITIGATIONS_OFF:-} ${REQUIRED_PARAMS} ${COMMON_PARAMS}"
 
-"Boot to single-user mode"  "single ${REQUIRED_PARAMS} ${COMMON_PARAMS}"
+"Boot to single-user mode"  "single ${MITIGATIONS_OFF:-} ${REQUIRED_PARAMS} ${COMMON_PARAMS}"
 
-"Boot with minimal options"  "${REQUIRED_PARAMS}"
+"Boot with minimal options"  "${MITIGATIONS_OFF:-} ${REQUIRED_PARAMS}"
 EOF
 	}
 	_setup_refind_bootloader
