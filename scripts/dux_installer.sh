@@ -59,7 +59,7 @@ _01
 cp -f -R "${GIT_DIR}" "/mnt/root"
 
 _02() {
-	(artix-chroot /mnt "${GIT_DIR}/scripts/02-post_chroot_root.sh") |& tee "${GIT_DIR}/logs/02-post_chroot_root.log" || return
+	(artix-chroot /mnt "/root/dux/scripts/02-post_chroot_root.sh") |& tee "${GIT_DIR}/logs/02-post_chroot_root.log" || return
 }
 _02
 
@@ -69,23 +69,23 @@ _03() {
 _03
 
 _pipewire() {
-	(artix-chroot /mnt "${GIT_DIR}/scripts/Pipewire.sh") |& tee "${GIT_DIR}/logs/Pipewire.log" || return
+	(artix-chroot /mnt "/root/dux/scripts/Pipewire.sh") |& tee "${GIT_DIR}/logs/Pipewire.log" || return
 }
 _pipewire
 
 _gpu() {
 	[[ ${disable_gpu} -ne 1 ]] &&
-		(artix-chroot /mnt "${GIT_DIR}/scripts/GPU.sh" DUX_INSTALLER=1) |& tee "${GIT_DIR}/logs/GPU.log" || return
+		(artix-chroot /mnt "/root/dux/scripts/GPU.sh" DUX_INSTALLER=1) |& tee "${GIT_DIR}/logs/GPU.log" || return
 }
 _gpu
 
 _desktop_environment() {
 	case ${desktop_environment} in
 	1)
-		(artix-chroot /mnt "${GIT_DIR}/scripts/GNOME.sh") |& tee "${GIT_DIR}/logs/GNOME.log" || return
+		(artix-chroot /mnt "/root/dux/scripts/GNOME.sh") |& tee "${GIT_DIR}/logs/GNOME.log" || return
 		;;
 	2)
-		(artix-chroot /mnt "${GIT_DIR}/scripts/KDE.sh") |& tee "${GIT_DIR}/logs/KDE.log" || return
+		(artix-chroot /mnt "/root/dux/scripts/KDE.sh") |& tee "${GIT_DIR}/logs/KDE.log" || return
 		;;
 	*)
 		printf "\nNOTICE: No desktop environment was selected.\n"
@@ -95,7 +95,7 @@ _desktop_environment() {
 _desktop_environment
 
 _04() {
-	(artix-chroot /mnt "${GIT_DIR}/scripts/04-finalize.sh") |& tee "${GIT_DIR}/logs/04-finalize.log" || return
+	(artix-chroot /mnt "/root/dux/scripts/04-finalize.sh") |& tee "${GIT_DIR}/logs/04-finalize.log" || return
 }
 _04
 
